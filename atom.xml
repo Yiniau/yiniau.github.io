@@ -44,64 +44,6 @@
   
   <entry>
     <title></title>
-    <link href="http://yoursite.com/2017/04/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/demo_3/"/>
-    <id>http://yoursite.com/2017/04/06/设计模式/demo_3/</id>
-    <published>2017-04-06T12:30:22.000Z</published>
-    <updated>2017-04-06T13:15:03.000Z</updated>
-    
-    <content type="html"><![CDATA[/* globals args */
-
-const log = type => ((target, name, descriptor) => {
-  const method = descriptor.value;
-  descriptor.value = (...args) => {
-    console.info(`(${type}) 正在执行: ${name}(${args}) = ?`);
-    let ret;
-    try {
-      ret = method.apply(target, args);
-      console.info(`(${type}) 成功 : ${name}(${args}) => ${ret}`);
-    } catch (error) {
-      console.error(`(${type}) 失败: ${name}(${args}) => ${error}`);
-    }
-    return ret;
-  };
-});
-
-class IronMan {
-  @log('IronMan 自检阶段')
-  check() {
-    return '检查完毕';
-  }
-  @log('IronMan 攻击阶段')
-  attack() {
-    return '击倒敌人';
-  }
-  @log('IronMan 机体报错')
-  error() {
-    throw 'Something is wrong!';
-  }
-}
-
-var tony = new IronMan();
-tony.check();
-tony.attack();
-tony.error();
-]]></content>
-    
-    <summary type="html">
-    
-      /* globals args */
-
-const log = type =&gt; ((target, name, descriptor) =&gt; {
-  const method = descriptor.value;
-  descriptor.value = (...args) =
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
     <link href="http://yoursite.com/2017/04/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/decorator%20%7C%20%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F%20#3/"/>
     <id>http://yoursite.com/2017/04/06/设计模式/decorator | 装饰者模式 #3/</id>
     <published>2017-04-06T12:28:13.000Z</published>
@@ -144,67 +86,6 @@ const log = type =&gt; ((target, name, descriptor) =&gt; {
     
       &lt;h1 id=&quot;decorator-装饰着模式-2&quot;&gt;&lt;a href=&quot;#decorator-装饰着模式-2&quot; class=&quot;headerlink&quot; title=&quot;decorator | 装饰着模式 #2&quot;&gt;&lt;/a&gt;decorator | 装饰着模式 #2&lt;/h1&gt;&lt;hr&gt;
 &lt;h
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="http://yoursite.com/2017/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/demo_1/"/>
-    <id>http://yoursite.com/2017/04/02/设计模式/demo_1/</id>
-    <published>2017-04-02T07:08:59.000Z</published>
-    <updated>2017-04-05T14:21:13.000Z</updated>
-    
-    <content type="html"><![CDATA[/*
- eslint Fatal:0
- */
-
-function decorateArmour(target, key, descriptor) {
-  const method = descriptor.value;
-  const moreDef = 100;
-  const des = descriptor;
-  let ret;
-  des.value = (...args) => {
-    args[0] += moreDef;
-    ret = method.apply(target, args);
-    return ret;
-  };
-  return descriptor;
-}
-class Man {
-  constructor(def = 2, atk = 3, hp = 3) {
-    this.init(def, atk, hp);
-  }
-
-  @decorateArmour
-  init(def, atk, hp) {
-    this.def = def; // 防御值
-    this.atk = atk;  // 攻击力
-    this.hp = hp;  // 血量
-  }
-
-  toString() {
-    return `防御力:${this.def} 攻击力:${this.atk} 生命值:${this.hp}`;
-  }
-}
-
-const tony = new Man();
-
-console.log(`当前状态 ===> ${tony}`);
-]]></content>
-    
-    <summary type="html">
-    
-      /*
- eslint Fatal:0
- */
-
-function decorateArmour(target, key, descriptor) {
-  const method = descriptor.value;
-  const moreDef = 100;
-  const
     
     </summary>
     
