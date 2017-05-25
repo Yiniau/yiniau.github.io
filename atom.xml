@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yiniau.com/"/>
-  <updated>2017-05-25T12:46:21.000Z</updated>
+  <updated>2017-05-25T12:57:44.000Z</updated>
   <id>http://yiniau.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>docker学习笔记-1</title>
-    <link href="http://yiniau.com/2017/05/25/docker%E7%AC%94%E8%AE%B0#1/"/>
-    <id>http://yiniau.com/2017/05/25/docker笔记#1/</id>
+    <title>docker笔记_1</title>
+    <link href="http://yiniau.com/2017/05/25/docker%E7%AC%94%E8%AE%B0_1/"/>
+    <id>http://yiniau.com/2017/05/25/docker笔记_1/</id>
     <published>2017-05-25T10:42:23.000Z</published>
-    <updated>2017-05-25T12:46:21.000Z</updated>
+    <updated>2017-05-25T12:57:44.000Z</updated>
     
     <content type="html"><![CDATA[<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>我是用的是mac，所以直接使用<code>brew install docker</code>就能顺利安装</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ docker -v</div><div class="line">$ Docker version 17.03.1-ce, build c6d412e</div></pre></td></tr></table></figure>
