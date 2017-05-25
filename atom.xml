@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yiniau.com/"/>
-  <updated>2017-05-25T10:42:23.000Z</updated>
+  <updated>2017-05-25T11:30:15.000Z</updated>
   <id>http://yiniau.com/</id>
   
   <author>
@@ -17,15 +17,17 @@
   
   <entry>
     <title>docker学习笔记-1</title>
-    <link href="http://yiniau.com/2017/05/25/docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/"/>
-    <id>http://yiniau.com/2017/05/25/docker学习笔记-1/</id>
+    <link href="http://yiniau.com/2017/05/25/docker%E7%AC%94%E8%AE%B0#1/"/>
+    <id>http://yiniau.com/2017/05/25/docker笔记#1/</id>
     <published>2017-05-25T10:42:23.000Z</published>
-    <updated>2017-05-25T10:42:23.000Z</updated>
+    <updated>2017-05-25T11:30:15.000Z</updated>
     
     <summary type="html">
     
     </summary>
     
+    
+      <category term="docker" scheme="http://yiniau.com/tags/docker/"/>
     
   </entry>
   
