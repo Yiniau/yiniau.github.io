@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yiniau.com/"/>
-  <updated>2017-05-31T14:28:30.000Z</updated>
+  <updated>2017-06-22T12:59:22.000Z</updated>
   <id>http://yiniau.com/</id>
   
   <author>
@@ -14,6 +14,98 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>E10S-Multi, WebExtension APIs, CSS clip-path.md</title>
+    <link href="http://yiniau.com/2017/06/20/E10S-Multi-WebExtension-APIs-CSS-clip-path-md/"/>
+    <id>http://yiniau.com/2017/06/20/E10S-Multi-WebExtension-APIs-CSS-clip-path-md/</id>
+    <published>2017-06-20T10:28:33.000Z</published>
+    <updated>2017-06-22T12:59:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="E10S-Multi-WebExtension-APIS-CSS-clip-path"><a href="#E10S-Multi-WebExtension-APIS-CSS-clip-path" class="headerlink" title="E10S-Multi, WebExtension APIS, CSS clip-path"></a>E10S-Multi, WebExtension APIS, CSS clip-path</h1><p>翻译自 <a href="https://hacks.mozilla.org/2017/06/firefox-54-e10s-webextension-apis-css-clip-path/?utm_source=dev-newsletter&amp;utm_medium=email&amp;utm_campaign=jun15-2017" target="_blank" rel="external">mozilla  hacks</a></p>
+<hr>
+<h3 id="“E10S-Multi-”-A-new-multi-process-model-for-Firefox"><a href="#“E10S-Multi-”-A-new-multi-process-model-for-Firefox" class="headerlink" title="“E10S-Multi:” A new multi-process model for Firefox"></a>“E10S-Multi:” A new multi-process model for Firefox</h3><p>今天的发布完成了Firefox向多进程浏览器的转变，除了UI进程之外，还运行了许多同步的内容进程，在Windows上有一个特殊的GPU进程。这样的设计会更容易激发现代处理器上可用的核心，并且使浏览器沙箱更加安全。它还提升了稳定性，一个页面进程的崩溃不回影响全部的tabs或者浏览器的其余部分。</p>
+<blockquote>
+<p>Today’s release completes Firefox’s transformation into a fully multi-process browser, running many simultaneous content processes in addition to a UI process and, on Windows, a special GPU process. This design makes it easier to utilize all of the cores available on modern processors and, in the future, to securely sandbox web content. It also improves stability, ensuring that a single content process crashing won’t take out all of your other tabs, nor the rest of the browser.</p>
+</blockquote>
+<p><img src="https://hacks.mozilla.org/files/2017/06/e10s-multi.png" alt="multi-process"></p>
+<p>初始的多进程Firefox（代号为 “Electrolysis” 简写为 “e10s”）首次亮相于Firefox 48。第一版将Firefox的UI移入了一个独立的进程，这样的话浏览器界面即使是在页面加载的时候也很快。Firefox 54通过并行运行许多内容进程来进一步实现这一点：每个进程都具有由主机操作系统管理的自己的RAM和CPU资源。</p>
+<blockquote>
+<p>An initial version of multi-process Firefox (codenamed “Electrolysis”, or “e10s” for short) debuted with Firefox 48 last August. This first version moved Firefox’s UI into its own process so that the browser interface remains snappy even under load. Firefox 54 takes this further by running many content processes in parallel: each one with its own RAM and CPU resources managed by the host operating system.</p>
+</blockquote>
+<p>无论优化程度如何，额外的进程确实带来了较少的内存开销，但是我们已经尝试将其减少到最低限度。即使有了这些优化，我们还想做更多的工作，以确保Firefox对您的RAM友好。这就是为什么不是每个选项卡产生一个新的进程，Firefox设置了一个上限：默认为四个，但可由用户配置（dom.ipc.processCount in about：config）。这在让Firefox在使用更强的多核CPUs的同时保证了你的控制权</p>
+<blockquote>
+<p>Additional processes do come with a small degree of memory overhead, no matter how well optimized, but we’ve worked wonders to reduce this to the bare minimum. Even with those optimizations, we wanted to do more to ensure that Firefox is respectful of your RAM. That’s why, instead of spawning a new process with every tab, Firefox sets an upper limit: four by default, but configurable by users (dom.ipc.processCount in about:config). This keeps you in control, while still letting Firefox take full advantage of multi-core CPUs.</p>
+</blockquote>
+<p>了解更多有关Firefox的多进程体系结构，查看<a href="https://medium.com/mozilla-tech/the-search-for-the-goldilocks-browser-and-why-firefox-may-be-just-right-for-you-1f520506aa35" target="_blank" rel="external">Medium post about the search for the “Goldilocks” browser.</a></p>
+<blockquote>
+<p>To learn more about Firefox’s multi-process architecture, check out this Medium post about the search for the “Goldilocks” browser.</p>
+</blockquote>
+<h3 id="new-WebExtension-APIs"><a href="#new-WebExtension-APIs" class="headerlink" title="new WebExtension APIs"></a>new WebExtension APIs</h3><p>Firefox继续快速实施新的WebExtension API。这些API旨在跨浏览器工作，并且将是Firefox 57今年11月推出的唯一可用于附加组件的API。</p>
+<blockquote>
+<p>Firefox continues its rapid implementation of new WebExtension APIs. These APIs are designed to work cross-browser, and will be the only APIs available to add-ons when Firefox 57 launches this November.</p>
+</blockquote>
+<p>最值得注意的是，现在可以使用WebExtensions创建自定义DevTools面板。例如，下面的屏幕截图显示了在Firefox中运行的Vue.js DevTools的Chrome版本，无需任何修改。这大大降低了devtools附加组件作者的维护负担，确保无论您喜欢哪种框架，其工具都可以在Firefox中运行。  </p>
+<p><img src="https://hacks.mozilla.org/files/2017/06/Screen-Shot-2017-06-12-at-19.14.30.png" alt="vue.js devtools"></p>
+<blockquote>
+<p>Most notably, it’s now possible to create custom DevTools panels using WebExtensions. For example, the screenshot below shows the Chrome version of the Vue.js DevTools running in Firefox without any modifications. This dramatically reduces the maintenance burden for authors of devtools add-ons, ensuring that no matter which framework you prefer, its tools will work in Firefox.</p>
+</blockquote>
+<p>另外：</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/sidebar_action" target="_blank" rel="external">侧边栏</a>可以通过sidebar_action清单属性创建。与其他API一起，侧边栏可用于实现<a href="https://addons.mozilla.org/en-US/firefox/addon/sidebar-tabs-webextension/" target="_blank" rel="external">垂直</a>或<a href="https://addons.mozilla.org/firefox/addon/tree-tabs/" target="_blank" rel="external">树形</a>样式选项卡等。</li>
+<li>WebExtensions 现在能够<a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/chrome_url_overrides" target="_blank" rel="external">替换或自定义标签页</a>(<a href="https://github.com/mdn/webextensions-examples/tree/master/top-sites" target="_blank" rel="external">exmaple</a>)</li>
+<li>WebExtensions也可以注册对<a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/protocol_handlers" target="_blank" rel="external">自定义协议</a>的支持。例如，加载项可以将<code>irc：//</code>链接重定向到IRCCloud。</li>
+</ul>
+<p>请阅读附加组件博客上全套<a href="https://blog.mozilla.org/addons/2017/03/13/webextensions-firefox-54/" target="_blank" rel="external">新增和更改的API</a>，或查看MDN上的完整WebExtensions文档。</p>
+<blockquote>
+<p>Additionally:</p>
+<ul>
+<li>Sidebars can be created via a sidebar_action manifest property. Together with other APIs, sidebars can be used to implement vertical or tree-style tabs, among other things.</li>
+<li>WebExtensions can now replace or customize the New Tab page. (Example).</li>
+<li>WebExtensions can also register support for custom protocols. For example, an add-on could redirect irc:// links to IRCCloud.</li>
+</ul>
+<p>Read about the full set of new and changed APIs on the Add-ons Blog, or check out the complete WebExtensions documentation on MDN.</p>
+</blockquote>
+<h1 id="CSS-shapes-in-clip-path"><a href="#CSS-shapes-in-clip-path" class="headerlink" title="CSS shapes in clip-path"></a>CSS shapes in clip-path</h1><p>CSS clip-path(剪辑路径)属性允许作者定义元素的哪些部分是可见的。以前，Firefox只支持定义为SVG文件的剪切路径。使用Firefox 54，作者还可以使用 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/basic-shape" target="_blank" rel="external">CSS shape functions</a> (形状函数)进行圆，椭圆，矩形或任意多边形（<a href="https://codepen.io/ladybenko/pen/oWJBwW" target="_blank" rel="external">Demo</a>）。</p>
+<blockquote>
+<p>The CSS clip-path property allows authors to define which parts of an element are visible. Previously, Firefox only supported clipping paths defined as SVG files. With Firefox 54, authors can also use CSS shape functions for circles, ellipses, rectangles or arbitrary polygons (Demo).</p>
+</blockquote>
+<p>想许多CSS值一样，剪切形状可以动画化。有一些规则控制<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/basic-shape#Interpolation_of_basic_shapes" target="_blank" rel="external">如何执行值之间的插值</a>，长话短说，当你在相同的形状或者具有相同数量顶点的多边形内进行插值，则一切都好。</p>
+<p><strong>exmaple</strong><br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"https://hacks.mozilla.org/files/2017/06/firefox-logo.png"</span> <span class="attr">height</span>=<span class="string">"200"</span> <span class="attr">class</span>=<span class="string">"circle"</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.circle</span> &#123;</div><div class="line">  <span class="attribute">animation</span>: <span class="number">2s</span> infinite alternate circle;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@<span class="keyword">keyframes</span> circle &#123;</div><div class="line">  <span class="selector-tag">from</span> &#123;</div><div class="line">    <span class="attribute">-webkit-clip-path</span>: <span class="built_in">circle</span>(0%);</div><div class="line">    <span class="attribute">clip-path</span>: <span class="built_in">circle</span>(0%);</div><div class="line">  &#125;</div><div class="line">  <span class="selector-tag">to</span> &#123;</div><div class="line">    <span class="attribute">-webkit-clip-path</span>: <span class="built_in">circle</span>(120px);</div><div class="line">    <span class="attribute">clip-path</span>: <span class="built_in">circle</span>(120px);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-tag">body</span> &#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">align-items</span>: center;</div><div class="line">  <span class="attribute">justify-content</span>: center;</div><div class="line">  <span class="attribute">min-height</span>: <span class="number">90vh</span>;</div><div class="line">  <span class="attribute">box-sizing</span>: border-box;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-tag">body</span> &gt; * &#123;</div><div class="line">  <span class="attribute">display</span>: block;</div><div class="line">  <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> auto;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="https://codepen.io/ladybenko/pen/NjoKVy" target="_blank" rel="external">剪切动画的demo on codepen</a></p>
+<blockquote>
+<p>Like many CSS values, clipping shapes can be animated. There are some rules that control how the interpolation between values is performed, but long story short: as long as you are interpolating between the same shapes, or polygons with the same number of vertices, you should be fine. Here’s how to animate a circular clipping:</p>
+</blockquote>
+<p>您还可以根据用户输入动态更改裁剪，如本示例中具有鼠标控制的<a href="https://codepen.io/ladybenko/pen/qmvKrM" target="_blank" rel="external">“潜望镜”效果的示例</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.querySelector(<span class="string">'.frame'</span>);</div><div class="line"><span class="keyword">const</span> RADIUS = <span class="number">80</span>;</div><div class="line"></div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'mousemove'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> x = event.clientX;</div><div class="line">  <span class="keyword">let</span> y = event.clientY;</div><div class="line"></div><div class="line">  <span class="keyword">let</span> circle = <span class="string">`circle(<span class="subst">$&#123;RADIUS&#125;</span>px at <span class="subst">$&#123;x&#125;</span>px <span class="subst">$&#123;y&#125;</span>px)`</span>;</div><div class="line">  container.style[<span class="string">'-webkit-clip-path'</span>] = circle;</div><div class="line">  container.style[<span class="string">'clip-path'</span>] = circle;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">article</span> <span class="attr">class</span>=<span class="string">"frame"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">article</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"message"</span>&gt;</span>Move the mouse around…<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">body</span> &#123;</div><div class="line">  <span class="attribute">background</span>: <span class="number">#000</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100vw</span>;</div><div class="line">  <span class="attribute">height</span>: <span class="number">100vh</span>;</div><div class="line">  <span class="attribute">padding</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.frame</span> &#123;</div><div class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(https://hacks.mozilla.org/files/2017/06/benko-game.png);</div><div class="line">  <span class="attribute">background-repeat</span>: repeat-x;</div><div class="line">  <span class="attribute">background-position</span>: left center;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</div><div class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</div><div class="line"></div><div class="line">  <span class="attribute">-webkit-clip-path</span>: <span class="built_in">circle</span>(80px);</div><div class="line">  <span class="attribute">clip-path</span>: <span class="built_in">circle</span>(80px);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.message</span> &#123;</div><div class="line">  <span class="attribute">position</span>: absolute;</div><div class="line">  <span class="attribute">color</span>: <span class="number">#fff</span>;</div><div class="line">  <span class="attribute">top</span>: <span class="number">20px</span>;</div><div class="line">  <span class="attribute">left</span>: <span class="number">20px</span>;</div><div class="line">  <span class="attribute">font-family</span>: monospace;</div><div class="line">  <span class="attribute">font-size</span>: <span class="number">1.2em</span>;</div><div class="line">  <span class="attribute">background</span>: <span class="number">#0006</span>;</div><div class="line">  <span class="attribute">padding</span>: <span class="number">1em</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>You can also dynamically change clipping according user input, like in this example that features a “periscope” effect controlled by the mouse:</p>
+</blockquote>
+<p>了解更多，查看我们<a href="https://hacks.mozilla.org/2017/06/css-shapes-clipping-and-masking/" target="_blank" rel="external">上周的 clip-path 文章</a>。</p>
+<blockquote>
+<p>To learn more, check our article on clip-path from last week.</p>
+</blockquote>
+<h1 id="Project-Dawn"><a href="#Project-Dawn" class="headerlink" title="Project Dawn"></a>Project Dawn</h1><p>最后，Firefox 54的发布标志着<a href="http://release.mozilla.org/firefox/release/2017/05/30/Dawn-update.html" target="_blank" rel="external">项目“Dawn”</a>转换的完成，消除了Firefox的预测版发布渠道，代号为“Aurora”。Firefox发行版现在每六个星期直接从Nightly转为Beta版。基于Aurora的Firefox Developer Edition现在基于Beta。</p>
+<blockquote>
+<p>Lastly, the release of Firefox 54 marks the completion of the Project Dawn transition, eliminating Firefox’s pre-beta release channel, codenamed “Aurora.” Firefox releases now move directly from Nightly into Beta every six weeks. Firefox Developer Edition, which was based on Aurora, is now based on Beta.</p>
+</blockquote>
+<p>对于早期采用者，我们还在Google Play上提供了适用于Android的<a href="https://play.google.com/store/apps/details?id=org.mozilla.fennec_aurora" target="_blank" rel="external">Firefox Nightly</a>。</p>
+<blockquote>
+<p>For early adopters, we’ve also made Firefox Nightly for Android available on Google Play.</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;E10S-Multi-WebExtension-APIS-CSS-clip-path&quot;&gt;&lt;a href=&quot;#E10S-Multi-WebExtension-APIS-CSS-clip-path&quot; class=&quot;headerlink&quot; title=&quot;E10S-Mul
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>docker笔记_2_Dockerfile</title>
