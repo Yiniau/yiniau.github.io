@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ～事件～ · Yiniau's blog</title><meta name="description" content="～事件～ - yiniau"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yiniau.com/atom.xml" title="Yiniau's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="/categories/" target="_self" class="nav-list-link">CATEGORIES</a></li><li class="nav-list-item"><a href="https://github.com/yiniau" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">～事件～</h1><div class="post-info">2017年7月11日</div><div class="post-content"><h1 id="事件！事件！事件！"><a href="#事件！事件！事件！" class="headerlink" title="事件！事件！事件！"></a>事件！事件！事件！</h1><hr>
+<p><strong><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/Events" target="_blank" rel="external">参考链接</a></strong></p>
+<blockquote>
+<p>最近在重学基础，看到事件，做一个总结。<br>路线 : 事件注册 -&gt; 事件监听 -&gt; 事件处理</p>
+</blockquote>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>事件和事件处理提供了javascript中的用于反应用户web页面打开的时间中发生的事件的核心技术，包括页面正在准备展示时发生的事件、由用户与页面交互产生的事件、由于媒体流播放或动画定时等许多其他原因引起的事件。</p>
+<p>最初，浏览器会获得一个页面的所有部分来解析，处理，绘制和呈现该页面给用户，然后浏览器将保持不变，直到请求和提取新页面为止。随之变为事件驱动的、基于reflow的页面渲染，浏览器将在处理，绘制，呈现内容之间重复循环，并等待一些新的事件触发器再次启动循环。事件触发器包括完成网络上的资源的加载（例如图像已被下载并且现在可以在屏幕上绘制），完成浏览器解析资源（例如HTML页面已被处理），用户与页面的内容的交互（例如，已经点击了按钮）。Douglas Crockford在几次讲座中有效地解释了这一变化，特别是他的话题 <strong>《An Inconvenient API: The Theory of the DOM》</strong> (不方便的API:DOM理论)，其中描述了从 original flow 到事件驱动浏览器的 flow 变化。(the change in flow from the original flow to the event driven browser.)<br><img src="https://mdn.mozillademos.org/files/6641/Browser_sequence_comparitive.svg" alt="古老的原型和基于事件、flow、渲染的现代模型"><br>后一种方法将最后一步从单一流程转变为永久循环，其中绘制<code>paint</code>之后是等待和处理新事件的发生。后一种方法的创新允许页面部分呈现，即使尚未获得资源;该方法也允许javascript影响事件驱动的行为。目前，Javascript代码的所有执行环境都使用事件和事件处理。</p>
+<h6 id="事件设计模式"><a href="#事件设计模式" class="headerlink" title="事件设计模式"></a>事件设计模式</h6><p>事件系统(the event system)的核心是一个简单的编程设计模式。这种模式从一类事件的协议开始：</p>
+<ul>
+<li>用于描述事件名称的 string</li>
+<li>用于表示该事件的关键属性的数据结构的类型</li>
+<li>将发射(<code>emit</code>)该事件的Javascript对象。<br>要使用该模式，需要：</li>
+<li>定义一个function，其作为一个议定的数据结构的参数</li>
+<li>通过使用前面的名称string与一个emit该事件的对象注册该function。</li>
+</ul>
+<p>这些function被称为“listener(监听函数)”或者“handler(处理函数)”，如在<a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Events/Creating_and_triggering_events" target="_blank" rel="external">自定义事件的文章</a>中所述，可以使用完全自定义的代码轻松实现此模式。</p>
+<h6 id="Notable-events"><a href="#Notable-events" class="headerlink" title="Notable events"></a>Notable events</h6><p>浏览器使用<code>addEventListen(...)</code>用作事件注册函数，该方法使用一个描述事件名称的string和一个事件处理函数作为参数。浏览器将大量对象定义为事件发射器，并定义了由对象生成的各种事件类型。</p>
+<p>在<a href="https://developer.mozilla.org/en-US/docs/Web/Reference/Events" target="_blank" rel="external">这里</a>有一个持续维护的现代浏览器使用的标准事件的列表(目前还不完整)</p>
+<p>一般来说，我们可以根据发出事件的对象来区分不同类型的事件，包括：</p>
+<ul>
+<li><code>window</code> 对象，列如浏览器窗口大小变化</li>
+<li><code>window.screen</code> 对象，如由于设备方向的变化</li>
+<li><code>document</code> 对象，包括加载，修改，用户交互和卸载页面</li>
+<li>DOM（文档对象模型）树中的对象，包括用户交互或修改</li>
+<li>用于网络请求的XMLHttpRequest对象，媒体对象如音视频，当媒体流播放器改变状态。</li>
+</ul>
+<p><strong>一些关键事件</strong><br>当页面完成渲染时，全局对象<code>window</code>会发出一个名为“load”的事件，这意味着所有资源已被下载和执行，从而运行脚本并显示图像。<br>当用户改变浏览器窗口大小的时候，<code>window</code>会发出一个名为“resize”的事件。<br>表示HTML文档的DOM对象 <code>document</code> 在文档加载完成时会发出一个名为“DOMContentLoaded”的事件。</p>
+<h6 id="event-对象的层次结构"><a href="#event-对象的层次结构" class="headerlink" title="event 对象的层次结构"></a>event 对象的层次结构</h6><p>下面是一幅<br><img src="https://mdn.mozillademos.org/files/6633/Js_Event_Object_Hierarchy.svg" alt="部分图"></p>
+<hr>
+<h3 id="事件注册"><a href="#事件注册" class="headerlink" title="事件注册"></a>事件注册</h3><p>对于浏览器提供的事件，上面有一个列表，这些事件可以直接使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 比如说点击事件 (click)</span></div><div class="line"><span class="keyword">const</span> targetElement = <span class="built_in">document</span>.querySelect(<span class="string">'#targetELementID'</span>)</div><div class="line">targetELement.addEventListen(<span class="string">'click'</span>, () =&gt; <span class="built_in">console</span>.log(<span class="string">'click event happened'</span>))</div></pre></td></tr></table></figure></p>
+<h4 id="addEventListen-…"><a href="#addEventListen-…" class="headerlink" title="addEventListen(…)"></a>addEventListen(…)</h4><p>addEventListen 是注册事件监听函数的广义方法，在W3C文档中记以 <a href="https://www.w3.org/TR/html5/webappapis.html#event-handler-idl-attributes" target="_blank" rel="external">event handler IDL Atrribute</a>，也能处理特定的<code>on&lt;event name&gt;</code>事件。<br>优点包括：</p>
+<ul>
+<li>允许注册多个事件</li>
+<li>当存在其他的库时，使用 <code>DHTML</code> 库或者 <code>Mozilla extensions</code> 不会出现问题。</li>
+<li>它提供了一种更精细的手段控制 listener 的触发阶段。（即可以选择捕获或者冒泡）。</li>
+<li>它对任何 DOM 元素都是有效的，而不仅仅只对 HTML 元素有效。</li>
+</ul>
+<p>需要注意也有几项<br><strong>当在事件分派的时候注册事件</strong> 并不会立刻触发事件，但是可能会在其他阶段触发，比如在捕获阶段注册的事件可能会在冒泡阶段被触发。<br><strong>多个相同的事件处理器</strong> 如果是在同一个 eventTarget 上注册的话重复的实例会被舍弃，所以这么做不会使得 EventListener 被调用两次，也不需要用 removeEventListener 手动清除多余的EventListener ，因为重复的都被自动抛弃了。(应该是FIFO)<br><strong>this的值</strong> 通常来说是触发元素的引用，当使用 addEventListener() 为一个元素注册事件的时候，它总是引用事件处理程序附加到的元素，而不是event.target，其与传递给句柄的 event 参数的 currentTarget 属性的值一样。但是当 <strong>直接在HTML中使用內联的方式注册事件的情况下 this 将会指向 window(严格模式下为 undefined)</strong></p>
+<blockquote>
+<p><strong>语法：</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; target.addEventListener(type, listener[, options]);</div><div class="line">&gt; target.addEventListener(type, listener[, useCapture]);</div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>type<br>  表示监听事件类型的字符串。(个人认为可以当作用于描述事件的名称字符串)<br>listener<br>  当所监听的事件类型触发时，会接收到一个事件通知（实现了 Event 接口的对象）对象。listener 必须是一个实现了 EventListener 接口的对象，或者是一个函数(基本上所有的函数都实现了EventListener对象)<br>options<br>  一个指定有关 listener 属性的可选参数对象。可用的选项如下：</p>
+<ul>
+<li>capture:  <code>Boolean</code>，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。(是否捕获)</li>
+<li>once:  <code>Boolean</code>，表示 listener 在添加之后最多只调用一次。如果是 true， listener 会在其被调用之后自动移除。</li>
+<li>passive: <code>Boolean</code>，表示 listener 永远不会调用 <code>preventDefault()</code>。如果 listener 仍然调用了这个函数，客户端将会忽略它并抛出一个控制台警告。<br>useCapture<br><code>Boolean</code>，是指在DOM树中，注册了该listener的元素，是否会先于它下方的任何事件目标，接收到该事件。沿着DOM树向上冒泡的事件不会触发被指定为use capture（也就是设为true）的listener。当一个元素嵌套了另一个元素，两个元素都对同一个事件注册了一个处理函数时，所发生的事件冒泡和事件捕获是两种不同的事件传播方式。事件传播模式决定了元素以哪个顺序接收事件。即在捕获模式和冒泡模式中选择一个。进一步的解释可以查看 <a href="http://www.w3.org/TR/DOM-Level-3-Events/#event-flow" target="_blank" rel="external">事件流</a> 及 <a href="http://www.quirksmode.org/js/events_order.html#link4" target="_blank" rel="external">JavaScript Event order</a> 文档。 如果没有指定， useCapture 默认为 false 。</li>
+</ul>
+</blockquote>
+<h4 id="注册on-event处理程序"><a href="#注册on-event处理程序" class="headerlink" title="注册on-event处理程序"></a>注册on-event处理程序</h4><p>直接在HTML的on-event属性中写事件处理函数在W3C文档中被称为 <a href="https://www.w3.org/TR/html5/webappapis.html#event-handler-content-attributes" target="_blank" rel="external">event handler content attribute</a></p>
+<p>我们可以以不同的方式为给定对象指定特定事件（例如单击）的on &lt;…&gt;事件处理程序：</p>
+<ul>
+<li>在元素上使用{eventtype}命名的HTML属性，例如： <code>&lt;button onclick =“return handleClick（event）;”&gt;</code></li>
+<li>或者通过从JavaScript设置相应的属性，例如： <code>document.getElementById(&quot;mybutton&quot;).onclick = function(event){...}</code>。</li>
+</ul>
+<p>请注意，每个对象对于给定的事件只能有一个事件处理程序（尽管该处理程序可以调用多个子处理程序）。<br>这就是为什么<code>addEventListener()</code>通常是更好的来获取事件通知的方式，特别是当期望相互独立地应用各种事件处理程序时，这即使是对于相同的事件 and/or 同一个元素也是如此。</p>
+<p>还要注意，on-event handlers 是自动调用的，而不随程序员的意志（尽管可以 mybutton.onclick(myevent);），因为它们可以作为一个可以分配一个真正的处理函数的占位符。</p>
+<p>对于 <strong>非元素对象</strong> ，我们也可以使用生成事件的许多非元素对象（包括窗口，文档，XMLHttpRequest等）的属性来设置事件处理程序，例如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xhr.onprogress = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; ... &#125;</div></pre></td></tr></table></figure></p>
+<p>由于历史原因，<code>&lt;body&gt;</code>和<code>&lt;frameset&gt;</code>元素上的某些属性/属性实际上在其父窗口对象上设置了事件处理程序。 （HTML规范名称为：onblur，onerror，onfocus，onload，onscroll。）</p>
+<p>当事件处理程序被指定为HTML属性时，指定的代码将被包装到具有以下参数的函数中：</p>
+<ul>
+<li>event == 对于所有事件处理程序，除了 onerror。</li>
+<li>event, source, lineno, colno, onerror 函数的 error。请注意，事件参数实际上包含错误消息作为字符串。</li>
+</ul>
+<p>对于this的指向，<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#In_an_in%E2%80%93line_event_handler" target="_blank" rel="external">这篇文章</a>有很详细的介绍</p>
+<h2 id="来自处理程序的返回值确定事件是否被取消。返回值的具体处理取决于事件的种类，详细信息请参见HTML规范中的“事件处理程序处理算法”。"><a href="#来自处理程序的返回值确定事件是否被取消。返回值的具体处理取决于事件的种类，详细信息请参见HTML规范中的“事件处理程序处理算法”。" class="headerlink" title="来自处理程序的返回值确定事件是否被取消。返回值的具体处理取决于事件的种类，详细信息请参见HTML规范中的“事件处理程序处理算法”。"></a>来自处理程序的返回值确定事件是否被取消。返回值的具体处理取决于事件的种类，详细信息请参见HTML规范中的<a href="https://html.spec.whatwg.org/multipage/webappapis.html#the-event-handler-processing-algorithm" target="_blank" rel="external">“事件处理程序处理算法”</a>。</h2><h3 id="Mutation-event"><a href="#Mutation-event" class="headerlink" title="Mutation event"></a>Mutation event</h3><p>突变事件用于监测DOM元素是否发生改变<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver" target="_blank" rel="external">参考这里</a></p>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p><code>MutationObObserver()</code><br>参数</p>
+<ul>
+<li><code>callback</code><br>该回调函数会在指定的DOM节点(目标节点)发生变化时被调用.在调用时,观察者对象会传给该函数两个参数,第一个参数是个包含了若干个MutationRecord对象的数组,第二个参数则是这个观察者对象本身.</li>
+</ul>
+<h4 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> observe( Node target, optional MutationObserverInit options );</div><div class="line"><span class="keyword">void</span> disconnect();</div><div class="line"><span class="built_in">Array</span> takeRecords();</div></pre></td></tr></table></figure>
+<p><strong>observe()</strong><br>给当前观察者对象注册需要观察的目标节点,在目标节点(还可以同时观察其后代节点)发生DOM变化时收到通知.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> observe(</div><div class="line">  Node target,</div><div class="line">  optional MutationObserverInit options</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>参数</p>
+<ul>
+<li>target<br>观察该节点是否会发生DOM变化.</li>
+<li>options<br>一个MutationObserverInit对象,指定要观察的DOM变化类型.</li>
+</ul>
+<blockquote>
+<p>注：向一个元素添加 observer 和 addEventListener 类似，注册多次不会有任何影响。即是说，如果你注册了两次，回调函数不会被调用两次，你也不必执行两次 disconnect() 以停止观察。换句话说，一旦某个元素被注册观察后，使用相同的 observer 实例再次注册不会发生任何变化。当然，如果回调对象不同，那么他会向这个元素添加另一个观察者。</p>
+</blockquote>
+<p><strong>disconnect()</strong><br>让该观察者对象停止观察指定目标的DOM变化.直到再次调用其<code>observe()</code>方法,该观察者对象包含的回调函数都不会再被调用.</p>
+<p><strong>takeRecords()</strong><br>清空观察者对象的记录队列,并返回里面的内容.</p>
+<p>返回值</p>
+<ul>
+<li>返回一个包含了MutationRecords对象的数组.</li>
+</ul>
+<h4 id="MutationObserverInit"><a href="#MutationObserverInit" class="headerlink" title="MutationObserverInit"></a>MutationObserverInit</h4><p>MutationObserverInit是一个用来配置观察者对象行为的对象,该对象可以拥有下面这些属性:</p>
+<ul>
+<li><p>childList<br>如果需要观察目标节点的子节点(新增了某个子节点,或者移除了某个子节点),则设置为true.</p>
+</li>
+<li><p>attributes<br>如果需要观察目标节点的属性节点(新增或删除了某个属性,以及某个属性的属性值发生了变化),则设置为true.</p>
+</li>
+<li><p>characterData<br>如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化,则设置为true.</p>
+</li>
+<li><p>subtree<br>除了目标节点,如果还需要观察目标节点的所有后代节点(观察目标节点所包含的整棵DOM树上的上述三种节点变化),则设置为true.</p>
+</li>
+<li><p>attributeOldValue<br>在attributes属性已经设为true的前提下,如果需要将发生变化的属性节点之前的属性值记录下来(记录到下面MutationRecord对象的oldValue属性中),则设置为true.</p>
+</li>
+<li><p>characterDataOldValue<br>在characterData属性已经设为true的前提下,如果需要将发生变化的characterData节点之前的文本内容记录下来(记录到下面MutationRecord对象的oldValue属性中),则设置为true.</p>
+</li>
+<li><p>attributeFilter<br>一个属性名数组(不需要指定命名空间),只有该数组中包含的属性名发生变化时才会被观察到,其他名称的属性发生变化后会被忽略.</p>
+</li>
+</ul>
+<h4 id="MutationRecord"><a href="#MutationRecord" class="headerlink" title="MutationRecord"></a>MutationRecord</h4><p>MutationRecord对象会作为第一个参数传递给观察者对象包含的回调函数,该对象有下面这些属性:</p>
+<ul>
+<li>type    String    如果是属性发生变化,则返回attributes.如果是一个CharacterData节点发生变化,则返回characterData,如果是目标节点的某个子节点发生了变化,则返回childList.</li>
+<li>target    Node    返回此次变化影响到的节点,具体返回那种节点类型是根据type值的不同而不同的. 如果type为attributes,则返回发生变化的属性节点所在的元素节点,如果type值为characterData,则返回发生变化的这个characterData节点.如果type为childList,则返回发生变化的子节点的父节点.</li>
+<li>addedNodes    NodeList    返回被添加的节点,或者为null.</li>
+<li>removedNodes    NodeList    返回被删除的节点,或者为null.</li>
+<li>previousSibling    Node    返回被添加或被删除的节点的前一个兄弟节点,或者为null.</li>
+<li>nextSibling    Node    返回被添加或被删除的节点的后一个兄弟节点,或者为null.</li>
+<li>attributeName    String    返回变更属性的本地名称,或者为null.</li>
+<li>attributeNamespace    String    返回变更属性的命名空间,或者为null.</li>
+<li>oldValue    String<br>根据type值的不同,返回的值也会不同.如果type为 attributes,则返回该属性变化之前的属性值.如果type为characterData,则返回该节点变化之前的文本数据.如果type为childList,则返回null.</li>
+</ul>
+<h3 id="触发和创建事件"><a href="#触发和创建事件" class="headerlink" title="触发和创建事件"></a>触发和创建事件</h3><p>我们可以自己创建和分派DOM事件。这些事件通常称为合成事件，而不是浏览器本身触发的事件。</p>
+<h4 id="创建自定义事件"><a href="#创建自定义事件" class="headerlink" title="创建自定义事件"></a>创建自定义事件</h4><p>Events 可以使用 Event构造函数 创建如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> event = <span class="keyword">new</span> Event(<span class="string">'build'</span>);</div><div class="line"></div><div class="line"><span class="comment">// Listen for the event.</span></div><div class="line">elem.addEventListener(<span class="string">'build'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123; ... &#125;, <span class="literal">false</span>);</div><div class="line"></div><div class="line"><span class="comment">// Dispatch the event.</span></div><div class="line">elem.dispatchEvent(event);</div></pre></td></tr></table></figure>
+<p>绝大多数现代浏览器中都会支持这个构造函数（Internet Explorer 例外）。 要了解更为复杂的方法，可参考下面的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/Events/Creating_and_triggering_events#The_old-fashioned_way" target="_blank" rel="external">过时的方法</a>  一节。</p>
+<h5 id="添加自定义数据-–-CustomEvent"><a href="#添加自定义数据-–-CustomEvent" class="headerlink" title="添加自定义数据 – CustomEvent()"></a>添加自定义数据 – CustomEvent()</h5><p>要向事件对象添加更多数据，可以使用CustomEvent接口，并且detail属性可用于传递自定义数据。<br>例如，event 可以创建如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> event = <span class="keyword">new</span> CustomEvent(<span class="string">'build'</span>, &#123; <span class="string">'detail'</span>: elem.dataset.time &#125;);</div></pre></td></tr></table></figure>
+<p>下面的代码允许你在事件监听器中访问更多的数据：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">eventHandler</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">  log(<span class="string">'The time is: '</span> + e.detail);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="触发内置事件"><a href="#触发内置事件" class="headerlink" title="触发内置事件"></a>触发内置事件</h4><p>下面的例子演示了一个在复选框上点击（click）的模拟（就是说在程序里生成一个click事件），这个模拟点击使用了DOM方法. 参见<a href="http://developer.mozilla.org/samples/domref/dispatchEvent.html" target="_blank" rel="external">这个动态示例</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">simulateClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> event = <span class="keyword">new</span> MouseEvent(<span class="string">'click'</span>, &#123;</div><div class="line">    <span class="string">'view'</span>: <span class="built_in">window</span>,</div><div class="line">    <span class="string">'bubbles'</span>: <span class="literal">true</span>,</div><div class="line">    <span class="string">'cancelable'</span>: <span class="literal">true</span></div><div class="line">  &#125;);</div><div class="line">  <span class="keyword">var</span> cb = <span class="built_in">document</span>.getElementById(<span class="string">'checkbox'</span>);</div><div class="line">  <span class="keyword">var</span> cancelled = !cb.dispatchEvent(event);</div><div class="line">  <span class="keyword">if</span> (cancelled) &#123;</div><div class="line">    <span class="comment">// A handler called preventDefault.</span></div><div class="line">    alert(<span class="string">"cancelled"</span>);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// None of the handlers called preventDefault.</span></div><div class="line">    alert(<span class="string">"not cancelled"</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="取消事件和阻止传播"><a href="#取消事件和阻止传播" class="headerlink" title="取消事件和阻止传播"></a>取消事件和阻止传播</h3><p>某些事件被指定为可取消。 对于这些事件，DOM实现通常具有与事件相关联的默认操作。 列如Web浏览器中的超链接。 当用户点击超链接时，默认动作通常是激活该超链接。 在处理这些事件之前，实现必须检查注册的事件监听器以接收事件并将事件分派给这些监听器。 这些 <code>EventListener</code> 然后可以选择取消实现的默认动作，或允许默认动作继续。 在浏览器中的超链接的情况下，取消操作将导致不激活超链接。</p>
+<p>通过调用 <code>Event</code> 的 <code>preventDefault</code>  方法来完成取消。如果有一个或多个  <code>EventListener</code> 在事件的任何阶段调用了 <code>preventDefault</code> ，那么默认动作将会取消。</p>
+<p><strong>Event.preventDefault()</strong></p>
+<p>被包含在Event事件对象中，可以在event handler函数中使用，用于阻止事件的默认操作。</p>
+<p>下面的例子显示了用preventDefault()阻止checkbox的开关。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>preventDefault example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Please click on the checkbox control.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"id-checkbox"</span>&gt;</span>Checkbox<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">id</span>=<span class="string">"id-checkbox"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">        <span class="built_in">document</span>.querySelector(<span class="string">"#id-checkbox"</span>).addEventListener(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</div><div class="line">            alert(<span class="string">"preventDefault will stop you from checking this checkbox!"</span>)</div><div class="line">            event.preventDefault();</div><div class="line">        &#125;, <span class="literal">false</span>);</div><div class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="取消冒泡"><a href="#取消冒泡" class="headerlink" title="取消冒泡"></a>取消冒泡</h4><p>对冒泡的事件（存在非冒泡的事件），事件被调度到其目标 <code>EventTarget</code> ，并且发现的任何事件监听器都被触发。然后，冒泡事件将触发任何追加 <code>EventTarget</code> 的父链的附加事件侦听器，检查在每个连续的 <code>EventTarget</code> 上注册的任何事件侦听器。这种向上传播将继续并且包括 <code>document</code> 。注册为捕获者的EventListeners在此阶段不会被触发。 <code>EventTargets</code> 链从事件目标到树的顶部在事件的初始调度之前确定。如果在事件处理过程中发生树的修改，则事件流将基于树的初始状态进行。</p>
+<p>与事件捕获相同，一般用于设置默认事件或者全局捕获事件，要关闭冒泡可以使用 <code>event.stopPropagation()</code> 这样可以阻止事件在冒泡阶段的所有传播。对于完整的跨浏览器体验可以使用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">doSomething</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (!e) <span class="keyword">var</span> e = <span class="built_in">window</span>.event;</div><div class="line">	e.cancelBubble = <span class="literal">true</span>;</div><div class="line">	<span class="keyword">if</span> (e.stopPropagation) e.stopPropagation();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用方法如同 <code>event.preventDefault()</code>。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2017/06/26/各种奇怪的不奇怪的命令/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 <a href="http://yiniau.com">yiniau</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
